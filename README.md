@@ -14,6 +14,12 @@ Traffic path:
 - `docs/USAGE_zh.md`: Chinese usage notes
 - `docs/TUTORIAL_zh.md`: Chinese setup tutorial
 
+## Documentation
+
+- [Chinese install guide](docs/INSTALL_zh.md)
+- [Chinese usage notes](docs/USAGE_zh.md)
+- [Chinese tutorial](docs/TUTORIAL_zh.md)
+
 ## Sensitive Data
 
 Do not commit your real subscription URL, raw subscription file, generated config, or node credentials.
