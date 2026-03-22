@@ -56,7 +56,22 @@ mkdir -p ~/.config/mihomo
 mkdir -p ~/.local/bin
 ```
 
-把仓库里的脚本和 shell helper 放到合适位置：
+把仓库里的脚本和 shell helper 放到合适位置。
+
+这里要区分“仓库中的源文件位置”和“机器上的最终生效位置”：
+
+- 仓库中的源文件：
+  - `scripts/update_mihomo_config.py`
+  - `scripts/refresh_mihomo.sh`
+  - `shell/mihomo_helpers.zsh`
+  - `shell/mihomo_helpers.bash`
+- 机器上的最终生效位置：
+  - `~/.config/mihomo/update_mihomo_config.py`
+  - `~/.local/bin/refresh_mihomo.sh`
+  - `~/.config/mihomo/mihomo_helpers.zsh`
+  - `~/.config/mihomo/mihomo_helpers.bash`
+
+复制命令：
 
 ```bash
 cp scripts/update_mihomo_config.py ~/.config/mihomo/
@@ -162,10 +177,19 @@ systemctl status mihomo
 
 推荐方式是：
 
-- `~/.config/mihomo/mihomo_helpers.zsh`
-- `~/.config/mihomo/mihomo_helpers.bash`
+- 仓库中保存一份 helper 模板：
+  - `shell/mihomo_helpers.zsh`
+  - `shell/mihomo_helpers.bash`
+- 安装时把它们复制到本机实际生效位置：
+  - `~/.config/mihomo/mihomo_helpers.zsh`
+  - `~/.config/mihomo/mihomo_helpers.bash`
+- 最后在 rc 文件里只保留一行 `source`
 
-然后在 rc 文件里只保留一行 `source`。
+这样做的好处是：
+
+- `~/.zshrc` / `~/.bashrc` 不会越来越臃肿
+- `mihomo` 相关函数可以单独维护
+- 仓库里的 helper 文件能和线上实际配置保持一致
 
 `~/.zshrc`：
 
@@ -198,6 +222,26 @@ helper 文件里已经包含：
 - `openai_proxy_on`
 - `openai_proxy_off`
 - 自动启用代理逻辑
+
+也就是说，真正控制“新开的 shell 是否自动带代理”的，不是 `~/.zshrc` 本体，而是 helper 文件里的这段逻辑：
+
+- 检查当前是不是交互式 shell
+- 检查 `MIHOMO_AUTO_PROXY` 是否为 `1`
+- 如果为 `1`，自动执行 `mihomo_proxy_on`
+
+如果你想临时关闭自动代理：
+
+```bash
+export MIHOMO_AUTO_PROXY=0
+source ~/.zshrc
+```
+
+如果想重新恢复自动代理：
+
+```bash
+export MIHOMO_AUTO_PROXY=1
+source ~/.zshrc
+```
 
 ## 9. 验证
 
