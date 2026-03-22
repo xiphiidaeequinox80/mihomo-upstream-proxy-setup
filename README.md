@@ -11,6 +11,8 @@ Traffic path:
 - `scripts/update_mihomo_config.py`: converts a Clash YAML subscription into a runtime `mihomo` config and injects `dialer-proxy`
 - `scripts/refresh_mihomo.sh`: fetches subscription YAML and regenerates config
 - `systemd/mihomo.service`: example service file
+- `shell/mihomo_helpers.zsh`: zsh helper functions
+- `shell/mihomo_helpers.bash`: bash helper functions
 - `docs/USAGE_zh.md`: Chinese usage notes
 - `docs/TUTORIAL_zh.md`: Chinese setup tutorial
 

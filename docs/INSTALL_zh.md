@@ -56,11 +56,13 @@ mkdir -p ~/.config/mihomo
 mkdir -p ~/.local/bin
 ```
 
-把仓库里的脚本放到合适位置：
+把仓库里的脚本和 shell helper 放到合适位置：
 
 ```bash
 cp scripts/update_mihomo_config.py ~/.config/mihomo/
 cp scripts/refresh_mihomo.sh ~/.local/bin/
+cp shell/mihomo_helpers.zsh ~/.config/mihomo/
+cp shell/mihomo_helpers.bash ~/.config/mihomo/
 chmod +x ~/.config/mihomo/update_mihomo_config.py
 chmod +x ~/.local/bin/refresh_mihomo.sh
 ```
@@ -154,39 +156,48 @@ systemctl status mihomo
 
 ## 8. 配置 shell
 
-### 8.1 bash/zsh 代理函数
+### 8.1 推荐做法：抽出独立 helper 文件
 
-建议在 `~/.bashrc` 或 `~/.zshrc` 中加入：
+不建议把一大段 `mihomo` 函数直接堆进 `~/.bashrc` 或 `~/.zshrc`。
 
-```bash
-mihomo_proxy_on() {
-    export http_proxy="http://127.0.0.1:7890"
-    export https_proxy="http://127.0.0.1:7890"
-    export HTTP_PROXY="$http_proxy"
-    export HTTPS_PROXY="$https_proxy"
-    export ALL_PROXY="socks5h://127.0.0.1:7891"
-    export all_proxy="$ALL_PROXY"
-}
+推荐方式是：
 
-mihomo_proxy_off() {
-    unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY all_proxy
-}
-```
+- `~/.config/mihomo/mihomo_helpers.zsh`
+- `~/.config/mihomo/mihomo_helpers.bash`
 
-### 8.2 zsh 自动启用（可选）
+然后在 rc 文件里只保留一行 `source`。
 
-如果希望新开的 zsh 自动带代理，可以在 `~/.zshrc` 中加：
+`~/.zshrc`：
 
 ```bash
-if [[ $- == *i* ]]; then
-    if [[ -z "$MIHOMO_AUTO_PROXY" ]]; then
-        export MIHOMO_AUTO_PROXY=1
-    fi
-    if [[ "$MIHOMO_AUTO_PROXY" == "1" ]]; then
-        mihomo_proxy_on >/dev/null 2>&1
-    fi
+if [ -f ~/.config/mihomo/mihomo_helpers.zsh ]; then
+    source ~/.config/mihomo/mihomo_helpers.zsh
 fi
 ```
+
+`~/.bashrc`：
+
+```bash
+if [ -f ~/.config/mihomo/mihomo_helpers.bash ]; then
+    . ~/.config/mihomo/mihomo_helpers.bash
+fi
+```
+
+### 8.2 helper 文件里包含什么
+
+helper 文件里已经包含：
+
+- `mihomo_proxy_on`
+- `mihomo_proxy_off`
+- `mihomo_refresh`
+- `mihomo_current_node`
+- `mihomo_use_node`
+- `mihomo_use_auto`
+- `mihomo_restart`
+- `mihomo_set_subscription`
+- `openai_proxy_on`
+- `openai_proxy_off`
+- 自动启用代理逻辑
 
 ## 9. 验证
 
