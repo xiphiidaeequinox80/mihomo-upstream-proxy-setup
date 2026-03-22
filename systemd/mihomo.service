@@ -1,0 +1,16 @@
+[Unit]
+Description=Mihomo proxy client
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=%h/.config/mihomo
+ExecStartPre=%h/.local/bin/refresh_mihomo.sh
+ExecStart=/usr/local/bin/mihomo -f %h/.config/mihomo/config.yaml
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
