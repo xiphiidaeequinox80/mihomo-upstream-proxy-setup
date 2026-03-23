@@ -1,6 +1,14 @@
 # mihomo helpers for zsh
+export MIHOMO_CONFIG_DIR="${MIHOMO_CONFIG_DIR:-$HOME/.config/mihomo}"
+export MIHOMO_ENV_FILE="${MIHOMO_ENV_FILE:-$MIHOMO_CONFIG_DIR/env.sh}"
+export MIHOMO_REFRESH_SCRIPT="${MIHOMO_REFRESH_SCRIPT:-$HOME/.local/bin/refresh_mihomo.sh}"
+
+if [ -f "$MIHOMO_ENV_FILE" ]; then
+    source "$MIHOMO_ENV_FILE"
+fi
+
 mihomo_refresh() {
-    ~/.local/bin/refresh_mihomo.sh
+    "$MIHOMO_REFRESH_SCRIPT"
 }
 
 mihomo_proxy_on() {
@@ -57,21 +65,29 @@ mihomo_set_subscription() {
         echo 'usage: mihomo_set_subscription "https://?..."'
         return 1
     fi
-    python3 - "$1" <<'INNERPY'
+    mkdir -p "$MIHOMO_CONFIG_DIR"
+    python3 - "$1" "$MIHOMO_ENV_FILE" <<'INNERPY'
 from pathlib import Path
+import shlex
 import sys
 
 url = sys.argv[1]
-p = Path('/root/.local/bin/refresh_mihomo.sh')
-lines = p.read_text().splitlines()
+env_path = Path(sys.argv[2])
+lines = []
+if env_path.exists():
+    lines = env_path.read_text(encoding="utf-8").splitlines()
+
+key = "MIHOMO_SUBSCRIPTION_URL"
+new_line = f"export {key}={shlex.quote(url)}"
 for i, line in enumerate(lines):
-    if line.startswith('SUBSCRIPTION_URL='):
-        lines[i] = f'SUBSCRIPTION_URL="${{MIHOMO_SUBSCRIPTION_URL:-{url}}}"'
+    if line.startswith(f"export {key}=") or line.startswith(f"{key}="):
+        lines[i] = new_line
         break
 else:
-    raise SystemExit('SUBSCRIPTION_URL line not found')
-p.write_text("\n".join(lines) + "\n")
-print('updated subscription url in refresh_mihomo.sh')
+    lines.append(new_line)
+
+env_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+print(f"updated {key} in {env_path}")
 INNERPY
 }
 
