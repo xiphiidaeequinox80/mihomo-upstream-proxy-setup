@@ -35,8 +35,8 @@ openai_proxy_off() {
 }
 
 mihomo_current_node() {
-    echo "PROXY:" && curl -s http://127.0.0.1:9090/proxies/PROXY | python3 -m json.tool
-    echo "AUTO:" && curl -s http://127.0.0.1:9090/proxies/AUTO | python3 -m json.tool
+    echo "PROXY:" && curl --noproxy '*' -s http://127.0.0.1:9090/proxies/PROXY | python3 -m json.tool
+    echo "AUTO:" && curl --noproxy '*' -s http://127.0.0.1:9090/proxies/AUTO | python3 -m json.tool
 }
 
 mihomo_use_node() {
@@ -45,13 +45,13 @@ mihomo_use_node() {
         return 1
     fi
     payload=$(printf '{"name":"%s"}' "$1")
-    curl -s -X PUT http://127.0.0.1:9090/proxies/PROXY \
+    curl --noproxy '*' -s -X PUT http://127.0.0.1:9090/proxies/PROXY \
       -H 'Content-Type: application/json' \
       -d "$payload" && echo
 }
 
 mihomo_use_auto() {
-    curl -s -X PUT http://127.0.0.1:9090/proxies/PROXY \
+    curl --noproxy '*' -s -X PUT http://127.0.0.1:9090/proxies/PROXY \
       -H 'Content-Type: application/json' \
       -d '{"name":"AUTO"}' && echo
 }

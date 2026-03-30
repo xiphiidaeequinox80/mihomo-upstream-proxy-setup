@@ -36,6 +36,10 @@ require_cmd() {
     }
 }
 
+has_systemd() {
+    command -v systemctl >/dev/null 2>&1 && [[ -d /run/systemd/system ]]
+}
+
 append_source_line() {
     local rc_path="$1"
     local line="$2"
@@ -57,6 +61,10 @@ download_mihomo() {
     tmp_gz="$(mktemp /tmp/mihomo.XXXXXX.gz)"
     tmp_bin="${tmp_gz%.gz}"
     echo "downloading mihomo ${MIHOMO_VERSION} from ${url}"
+    HTTP_PROXY="${HTTP_PROXY:-${http_proxy:-${INTERNAL_PROXY_URL:-}}}" \
+    HTTPS_PROXY="${HTTPS_PROXY:-${https_proxy:-${INTERNAL_PROXY_URL:-}}}" \
+    http_proxy="${http_proxy:-${HTTP_PROXY:-${INTERNAL_PROXY_URL:-}}}" \
+    https_proxy="${https_proxy:-${HTTPS_PROXY:-${INTERNAL_PROXY_URL:-}}}" \
     curl -fsSL --connect-timeout 20 --max-time 300 "$url" -o "$tmp_gz"
     gunzip -f "$tmp_gz"
     install -m 0755 "$tmp_bin" "$MIHOMO_BIN"
@@ -119,7 +127,6 @@ main() {
     require_cmd python3
     require_cmd install
     require_cmd gunzip
-    require_cmd systemctl
     require_cmd getent
 
     mkdir -p "${CONFIG_DIR}" "${LOCAL_BIN_DIR}"
@@ -141,10 +148,12 @@ main() {
 
     su - "${INSTALL_USER}" -c "GENERATOR_PATH='${CONFIG_DIR}/update_mihomo_config.py' '${LOCAL_BIN_DIR}/refresh_mihomo.sh'"
 
-    install_service
-    systemctl daemon-reload
-    systemctl enable --now mihomo.service
-    systemctl --no-pager --full status mihomo.service | sed -n '1,12p'
+    if has_systemd; then
+        install_service
+        systemctl daemon-reload
+        systemctl enable --now mihomo.service
+        systemctl --no-pager --full status mihomo.service | sed -n '1,12p'
+    fi
 
     cat <<INNER
 
@@ -159,6 +168,10 @@ Helpers:
   ${CONFIG_DIR}/mihomo_helpers.bash
 
 Service:
+INNER
+
+    if has_systemd; then
+        cat <<INNER
   ${SERVICE_PATH}
 
 Next:
@@ -166,6 +179,21 @@ Next:
   2. verify: mihomo_current_node
   3. test: curl --proxy http://127.0.0.1:7890 -I https://api.openai.com/v1/models
 INNER
+    else
+        cat <<INNER
+  systemd not detected; service installation skipped
+
+Manual start:
+  ${MIHOMO_BIN} -f ${CONFIG_DIR}/config.yaml
+  nohup ${MIHOMO_BIN} -f ${CONFIG_DIR}/config.yaml >/tmp/mihomo.log 2>&1 &
+
+Next:
+  1. open a new shell or run: source ~/.zshrc
+  2. start mihomo manually using one of the commands above
+  3. verify: mihomo_current_node
+  4. test: curl --proxy http://127.0.0.1:7890 -I https://api.openai.com/v1/models
+INNER
+    fi
 }
 
 main "$@"
