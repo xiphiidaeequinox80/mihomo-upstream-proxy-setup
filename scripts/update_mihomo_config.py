@@ -4,6 +4,7 @@ import base64
 import os
 import sys
 from pathlib import Path
+from typing import List, Optional
 from urllib.parse import parse_qs, unquote, urlsplit
 
 import yaml
@@ -40,14 +41,14 @@ def decode_base64_text(text: str) -> str:
         raise ValueError("subscription content is neither Clash YAML nor a supported base64 subscription") from exc
 
 
-def normalize_node_name(raw_name: str | None, fallback: str) -> str:
+def normalize_node_name(raw_name: Optional[str], fallback: str) -> str:
     if not raw_name:
         return fallback
     name = unquote(raw_name).strip()
     return name or fallback
 
 
-def parse_bool_flag(values: list[str] | None, default: bool = False) -> bool:
+def parse_bool_flag(values: Optional[List[str]], default: bool = False) -> bool:
     if not values:
         return default
     value = values[-1].strip().lower()
